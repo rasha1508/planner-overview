@@ -12,6 +12,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       * {
         box-sizing: border-box;
@@ -20,259 +21,291 @@
       }
       body {
         font-family: "Montserrat", sans-serif;
-        background-color: #fff9f9;
+        background-color: transparent;
         color: #4a4a4a;
         line-height: 1.6;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      body.dark-mode {
+        color: #e0e0e0;
       }
       /* Widget Container */
       .widget-container {
         width: 100%;
         max-width: 1200px;
-        margin: 30px auto;
+        margin: 0 auto;
         border-radius: 12px;
         overflow: hidden;
         background-color: #fff;
-        box-shadow: 0 4px 15px rgba(212, 165, 165, 0.15);
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+      }
+      body.dark-mode .widget-container {
+        background-color: #2d2d2d;
+        border-color: #444;
       }
       /* Widget Content */
       .widget-content {
-        padding: 20px;
+        padding: 15px;
+      }
+      /* Header */
+      header {
+        text-align: center;
+        margin-bottom: 15px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      h1 {
+        font-family: "Parisienne", cursive;
+        font-size: 24px;
+        color: #a67c7c;
+        margin-bottom: 0;
+        font-weight: 400;
+        letter-spacing: 1px;
+        flex-grow: 1;
+      }
+      body.dark-mode h1 {
+        color: #d4a5a5;
+      }
+      .subtitle {
+        font-family: "Montserrat", sans-serif;
+        font-style: italic;
+        font-size: 14px;
+        color: #a67c7c;
+        margin-bottom: 0;
+        font-weight: 300;
+        flex-grow: 1;
+        text-align: center;
+      }
+      body.dark-mode .subtitle {
+        color: #d4a5a5;
+      }
+      /* Dark Mode Toggle */
+      .dark-mode-toggle {
+        background: none;
+        border: none;
+        color: #a67c7c;
+        font-size: 18px;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+      body.dark-mode .dark-mode-toggle {
+        color: #d4a5a5;
+      }
+      /* Stats Cards */
+      .stats-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      .stat-card {
+        flex: 1;
+        min-width: 200px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+      body.dark-mode .stat-card {
+        background-color: #3a3a3a;
+      }
+      .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      }
+      .stat-icon {
+        font-size: 28px;
+        color: #a67c7c;
+        margin-bottom: 10px;
+      }
+      body.dark-mode .stat-icon {
+        color: #d4a5a5;
+      }
+      .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #4a4a4a;
+        margin-bottom: 5px;
+      }
+      body.dark-mode .stat-value {
+        color: #e0e0e0;
+      }
+      .stat-label {
+        font-size: 14px;
+        color: #777;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      body.dark-mode .stat-label {
+        color: #bbb;
       }
       /* Progress Section */
       .progress-section {
-        margin-bottom: 25px;
-        text-align: center;
+        margin-bottom: 20px;
       }
-      .progress-title {
-        font-family: "Parisienne", cursive;
-        font-size: 28px;
+      .section-title {
+        font-family: "Montserrat", sans-serif;
+        font-size: 18px;
+        font-weight: 600;
         color: #a67c7c;
         margin-bottom: 15px;
+        display: flex;
+        align-items: center;
       }
-      .progress-bar-container {
-        width: 100%;
-        height: 20px;
-        background-color: #f0e6e6;
+      body.dark-mode .section-title {
+        color: #d4a5a5;
+      }
+      .section-title i {
+        margin-right: 8px;
+      }
+      .progress-container {
+        background-color: #f9f7f7;
         border-radius: 10px;
+        height: 20px;
         overflow: hidden;
         margin-bottom: 10px;
+      }
+      body.dark-mode .progress-container {
+        background-color: #444;
       }
       .progress-bar {
         height: 100%;
         background: linear-gradient(90deg, #d4a5a5, #c19696);
         border-radius: 10px;
-        transition: width 0.5s ease;
+        transition: width 1s ease-in-out;
       }
       .progress-text {
-        font-size: 16px;
-        color: #a67c7c;
-        font-weight: 500;
-      }
-      /* Stats Section */
-      .stats-section {
         display: flex;
-        justify-content: space-around;
-        margin-bottom: 25px;
-        flex-wrap: wrap;
-      }
-      .stat-item {
-        text-align: center;
-        padding: 10px;
-      }
-      .stat-number {
-        font-size: 24px;
-        font-weight: 600;
-        color: #a67c7c;
-      }
-      .stat-label {
+        justify-content: space-between;
         font-size: 14px;
         color: #777;
       }
-      /* Horizontal Timeline Styles */
-      .timeline-container {
+      body.dark-mode .progress-text {
+        color: #bbb;
+      }
+      /* Chart Container */
+      .chart-container {
         position: relative;
+        height: 250px;
         margin-bottom: 20px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        padding-bottom: 15px;
-        /* Custom scrollbar */
-        scrollbar-width: thin;
-        scrollbar-color: #d4a5a5 #f9f7f7;
       }
-      /* Webkit scrollbar styling */
-      .timeline-container::-webkit-scrollbar {
-        height: 10px;
-      }
-      .timeline-container::-webkit-scrollbar-track {
-        background: #f9f7f7;
-        border-radius: 10px;
-        margin: 0 15px;
-      }
-      .timeline-container::-webkit-scrollbar-thumb {
-        background: linear-gradient(to right, #d4a5a5, #c19696);
-        border-radius: 10px;
-        border: 2px solid #f9f7f7;
-      }
-      .timeline-container::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(to right, #c19696, #b88787);
-      }
-      .timeline-wrapper {
+      /* Period Progress */
+      .periods-container {
         display: flex;
-        gap: 20px;
-        min-width: max-content;
-        padding: 0 10px;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
       }
-      .timeline-period {
-        flex: 0 0 220px;
+      .period-card {
+        flex: 1;
+        min-width: 200px;
         background-color: #fff;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         overflow: hidden;
         transition: all 0.3s ease;
-        height: 100%;
       }
-      .timeline-period:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      body.dark-mode .period-card {
+        background-color: #3a3a3a;
       }
-      .timeline-header {
-        padding: 15px;
+      .period-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      }
+      .period-header {
         background: linear-gradient(135deg, #d4a5a5, #c19696);
         color: white;
-        text-align: center;
-        position: relative;
-      }
-      .timeline-header::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 3C7.82 3 2 8.82 2 16s5.82 13 13 13 13-5.82 13-13S22.18 3 15 3zm0 2c6.08 0 11 4.92 11 11s-4.92 11-11 11S4 22.08 4 16 8.92 5 15 5zm0 2c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z' fill='rgba(255,255,255,0.1)' fill-rule='evenodd'/%3E%3C/svg%3E");
-        opacity: 0.3;
-      }
-      .timeline-icon {
-        font-size: 24px;
-        margin-bottom: 8px;
-        z-index: 1;
-      }
-      .timeline-title {
-        font-family: "Montserrat", sans-serif;
-        font-size: 16px;
+        padding: 10px 15px;
         font-weight: 600;
-        z-index: 1;
-      }
-      .timeline-tasks {
-        padding: 15px;
-        overflow-y: hidden;
-        height: auto;
-      }
-      .task-item {
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        padding: 12px;
-        margin-bottom: 12px;
-        border-left: 4px solid #d4a5a5;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        position: relative;
-      }
-      .task-item:hover {
-        transform: translateX(5px);
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-      }
-      .task-item::before {
-        content: "\f00c";
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        color: transparent;
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
         font-size: 16px;
-        transition: color 0.3s ease;
-      }
-      .task-item:hover::before {
-        color: #d4a5a5;
-      }
-      .task-content {
         display: flex;
         align-items: center;
       }
-      .task-icon {
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background-color: #f8d7da;
-        color: #721c24;
+      .period-header i {
+        margin-right: 8px;
+      }
+      .period-content {
+        padding: 15px;
+      }
+      .period-stats {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 12px;
-        font-size: 12px;
-        flex-shrink: 0;
-      }
-      .task-text {
-        font-family: "Montserrat", sans-serif;
-        font-size: 14px;
-        color: #4a4a4a;
-        font-weight: 500;
-      }
-      /* Empty State */
-      .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-        color: #a67c7c;
-      }
-      .empty-state i {
-        font-size: 48px;
-        color: #d4a5a5;
-        margin-bottom: 15px;
-      }
-      .empty-state h3 {
-        font-family: "Montserrat", sans-serif;
-        font-size: 20px;
+        justify-content: space-between;
         margin-bottom: 10px;
       }
-      /* Print Styles */
-      @media print {
-        body {
-          background-color: white;
-          color: black;
-        }
-        .widget-container {
-          max-width: 100%;
-          box-shadow: none;
-          border: none;
-        }
-        .task-item {
-          break-inside: avoid;
-          box-shadow: none;
-          border: 1px solid #ddd;
-        }
-        .timeline-wrapper {
-          flex-wrap: wrap;
-        }
-        .timeline-period {
-          flex: 0 0 calc(33.333% - 20px);
-          margin-bottom: 20px;
-        }
+      .period-stat {
+        text-align: center;
       }
+      .period-stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #a67c7c;
+      }
+      body.dark-mode .period-stat-value {
+        color: #d4a5a5;
+      }
+      .period-stat-label {
+        font-size: 12px;
+        color: #777;
+        text-transform: uppercase;
+      }
+      body.dark-mode .period-stat-label {
+        color: #bbb;
+      }
+      .period-progress {
+        background-color: #f9f7f7;
+        border-radius: 10px;
+        height: 8px;
+        overflow: hidden;
+      }
+      body.dark-mode .period-progress {
+        background-color: #444;
+      }
+      .period-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #d4a5a5, #c19696);
+        border-radius: 10px;
+      }
+      /* Sync Status */
+      .sync-status {
+        position: absolute;
+        top: 15px;
+        right: 45px;
+        font-size: 12px;
+        color: #777;
+        display: flex;
+        align-items: center;
+      }
+      body.dark-mode .sync-status {
+        color: #bbb;
+      }
+      .sync-icon {
+        margin-right: 5px;
+        color: #28a745;
+      }
+      .sync-icon.error {
+        color: #dc3545;
+      }
+      /* Responsive Design */
       @media (max-width: 768px) {
-        .timeline-period {
-          flex: 0 0 180px;
+        h1 {
+          font-size: 20px;
         }
-        .widget-container {
-          margin: 5px;
+        .subtitle {
+          font-size: 12px;
         }
-        .stats-section {
-          justify-content: center;
+        .stat-card {
+          min-width: 150px;
         }
-        .stat-item {
-          margin: 0 10px;
+        .period-card {
+          min-width: 150px;
+        }
+        .chart-container {
+          height: 200px;
         }
       }
     </style>
@@ -280,42 +313,84 @@
   <body>
     <div class="widget-container">
       <div class="widget-content">
-        <!-- Progress Section -->
-        <div class="progress-section">
-          <h2 class="progress-title">Wedding Planning Progress</h2>
-          <div class="progress-bar-container">
-            <div class="progress-bar" id="progressBar"></div>
+        <header>
+          <div>
+            <h1>Wedding Planning Overview</h1>
+            <p class="subtitle">Your journey to the perfect day</p>
           </div>
-          <div class="progress-text" id="progressText">0% Complete</div>
-        </div>
-        
-        <!-- Stats Section -->
-        <div class="stats-section">
-          <div class="stat-item">
-            <div class="stat-number" id="totalTasks">0</div>
+          <div class="sync-status">
+            <i class="fas fa-sync sync-icon" id="syncIcon"></i>
+            <span id="syncText">Synced</span>
+          </div>
+          <button class="dark-mode-toggle" id="darkModeToggle">
+            <i class="fas fa-moon"></i>
+          </button>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-tasks"></i>
+            </div>
+            <div class="stat-value" id="totalTasks">0</div>
             <div class="stat-label">Total Tasks</div>
           </div>
-          <div class="stat-item">
-            <div class="stat-number" id="completedTasks">0</div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-value" id="completedTasks">0</div>
             <div class="stat-label">Completed</div>
           </div>
-          <div class="stat-item">
-            <div class="stat-number" id="remainingTasks">0</div>
-            <div class="stat-label">Remaining</div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="stat-value" id="inProgressTasks">0</div>
+            <div class="stat-label">In Progress</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-value" id="upcomingDeadlines">0</div>
+            <div class="stat-label">Upcoming</div>
           </div>
         </div>
-        
-        <!-- Horizontal Timeline Container -->
-        <div class="timeline-container" id="timelineContainer">
-          <div class="timeline-wrapper" id="timelineWrapper">
-            <!-- Timeline periods will be populated by JavaScript -->
+
+        <!-- Overall Progress -->
+        <div class="progress-section">
+          <div class="section-title">
+            <i class="fas fa-chart-line"></i> Overall Progress
           </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="overallProgressBar"></div>
+          </div>
+          <div class="progress-text">
+            <span id="progressPercentage">0%</span>
+            <span id="progressText">0 of 0 tasks completed</span>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="section-title">
+          <i class="fas fa-chart-pie"></i> Progress by Period
+        </div>
+        <div class="chart-container">
+          <canvas id="progressChart"></canvas>
+        </div>
+
+        <!-- Period Progress Cards -->
+        <div class="periods-container" id="periodsContainer">
+          <!-- Period cards will be populated by JavaScript -->
         </div>
       </div>
     </div>
+
     <script>
-      // Wedding planning tasks data with additional fields
-      const weddingTasks = [
+      // Default wedding planning tasks data (will be replaced with data from localStorage)
+      const defaultWeddingTasks = [
         {
           period: "1 Year Before",
           icon: "fa-calendar",
@@ -325,30 +400,35 @@
               text: "Set wedding budget",
               status: "not-started",
               dueDate: "",
+              notes: "Determine overall budget and allocate funds to different categories",
             },
             {
               id: 2,
               text: "Choose wedding date",
               status: "not-started",
               dueDate: "",
+              notes: "Consider venue availability, season, and personal significance",
             },
             {
               id: 3,
               text: "Book wedding venue",
               status: "not-started",
               dueDate: "",
+              notes: "Popular venues book up to 18 months in advance",
             },
             {
               id: 4,
               text: "Hire wedding planner",
               status: "not-started",
               dueDate: "",
+              notes: "Optional but recommended for complex weddings",
             },
             {
               id: 5,
               text: "Create guest list",
               status: "not-started",
               dueDate: "",
+              notes: "Start with a rough list and refine as planning progresses",
             },
           ],
         },
@@ -361,30 +441,35 @@
               text: "Book photographer",
               status: "not-started",
               dueDate: "",
+              notes: "Review portfolios and check availability",
             },
             {
               id: 7,
               text: "Book videographer",
               status: "not-started",
               dueDate: "",
+              notes: "Consider if you want video coverage of your day",
             },
             {
               id: 8,
               text: "Book caterer",
               status: "not-started",
               dueDate: "",
+              notes: "Taste menus and discuss dietary restrictions",
             },
             {
               id: 9,
               text: "Order wedding invitations",
               status: "not-started",
               dueDate: "",
+              notes: "Order 6-8 months before the wedding",
             },
             {
               id: 10,
               text: "Choose wedding party",
               status: "not-started",
               dueDate: "",
+              notes: "Select bridesmaids, groomsmen, and other roles",
             },
           ],
         },
@@ -397,30 +482,35 @@
               text: "Shop for wedding dress",
               status: "not-started",
               dueDate: "",
+              notes: "Allow 6-9 months for dress shopping and alterations",
             },
             {
               id: 12,
               text: "Select bridesmaid dresses",
               status: "not-started",
               dueDate: "",
+              notes: "Consider styles and colors that complement your dress",
             },
             {
               id: 13,
               text: "Book florist",
               status: "not-started",
               dueDate: "",
+              notes: "Discuss bouquet designs and floral arrangements",
             },
             {
               id: 14,
               text: "Book entertainment",
               status: "not-started",
               dueDate: "",
+              notes: "DJ, band, or other entertainment options",
             },
             {
               id: 15,
               text: "Reserve hotel room blocks",
               status: "not-started",
               dueDate: "",
+              notes: "For out-of-town guests",
             },
           ],
         },
@@ -433,30 +523,35 @@
               text: "Order wedding cake",
               status: "not-started",
               dueDate: "",
+              notes: "Schedule cake tasting and design consultation",
             },
             {
               id: 17,
               text: "Send save-the-dates",
               status: "not-started",
               dueDate: "",
+              notes: "Mail 6-8 months before the wedding",
             },
             {
               id: 18,
               text: "Plan honeymoon",
               status: "not-started",
               dueDate: "",
+              notes: "Book flights and accommodations",
             },
             {
               id: 19,
               text: "Register for gifts",
               status: "not-started",
               dueDate: "",
+              notes: "Create registries at multiple stores",
             },
             {
               id: 20,
               text: "Book transportation",
               status: "not-started",
               dueDate: "",
+              notes: "For wedding party and guests",
             },
           ],
         },
@@ -469,30 +564,35 @@
               text: "Finalize menu with caterer",
               status: "not-started",
               dueDate: "",
+              notes: "Select appetizers, main courses, and desserts",
             },
             {
               id: 22,
               text: "Order wedding favors",
               status: "not-started",
               dueDate: "",
+              notes: "Personalized gifts for guests",
             },
             {
               id: 23,
               text: "Schedule dress fittings",
               status: "not-started",
               dueDate: "",
+              notes: "First fitting 3-4 months before wedding",
             },
             {
               id: 24,
               text: "Plan rehearsal dinner",
               status: "not-started",
               dueDate: "",
+              notes: "Book venue and create guest list",
             },
             {
               id: 25,
               text: "Apply for marriage license",
               status: "not-started",
               dueDate: "",
+              notes: "Check local requirements and timing",
             },
           ],
         },
@@ -505,30 +605,35 @@
               text: "Send wedding invitations",
               status: "not-started",
               dueDate: "",
+              notes: "Mail 8-10 weeks before wedding",
             },
             {
               id: 27,
               text: "Finalize guest count",
               status: "not-started",
               dueDate: "",
+              notes: "Track RSVPs and provide final count to venue",
             },
             {
               id: 28,
               text: "Purchase wedding rings",
               status: "not-started",
               dueDate: "",
+              notes: "Allow time for resizing if needed",
             },
             {
               id: 29,
               text: "Plan ceremony details",
               status: "not-started",
               dueDate: "",
+              notes: "Readings, music, vows, and ceremony flow",
             },
             {
               id: 30,
               text: "Create wedding day timeline",
               status: "not-started",
               dueDate: "",
+              notes: "Detailed schedule for all wedding events",
             },
           ],
         },
@@ -541,30 +646,35 @@
               text: "Confirm all vendors",
               status: "not-started",
               dueDate: "",
+              notes: "Finalize details and payment schedules",
             },
             {
               id: 32,
               text: "Final dress fitting",
               status: "not-started",
               dueDate: "",
+              notes: "Last alterations and perfect fit",
             },
             {
               id: 33,
               text: "Pick up wedding attire",
               status: "not-started",
               dueDate: "",
+              notes: "Dress, shoes, and accessories",
             },
             {
               id: 34,
               text: "Create seating chart",
               status: "not-started",
               dueDate: "",
+              notes: "Assign guests to tables",
             },
             {
               id: 35,
               text: "Prepare welcome bags",
               status: "not-started",
               dueDate: "",
+              notes: "For out-of-town guests",
             },
           ],
         },
@@ -577,30 +687,35 @@
               text: "Confirm final guest count",
               status: "not-started",
               dueDate: "",
+              notes: "Provide to caterer and venue",
             },
             {
               id: 37,
               text: "Finalize vendor payments",
               status: "not-started",
               dueDate: "",
+              notes: "Settle remaining balances",
             },
             {
               id: 38,
               text: "Delegate day-of tasks",
               status: "not-started",
               dueDate: "",
+              notes: "Assign responsibilities to wedding party",
             },
             {
               id: 39,
               text: "Prepare wedding day emergency kit",
               status: "not-started",
               dueDate: "",
+              notes: "Include safety pins, stain remover, etc.",
             },
             {
               id: 40,
               text: "Confirm honeymoon reservations",
               status: "not-started",
               dueDate: "",
+              notes: "Check flight times and hotel bookings",
             },
           ],
         },
@@ -613,30 +728,35 @@
               text: "Pick up marriage license",
               status: "not-started",
               dueDate: "",
+              notes: "Check expiration date",
             },
             {
               id: 42,
               text: "Give final headcount to caterer",
               status: "not-started",
               dueDate: "",
+              notes: "Include any last-minute changes",
             },
             {
               id: 43,
               text: "Confirm arrival times with vendors",
               status: "not-started",
               dueDate: "",
+              notes: "Create detailed schedule for vendors",
             },
             {
               id: 44,
               text: "Pack for honeymoon",
               status: "not-started",
               dueDate: "",
+              notes: "Don't forget travel documents",
             },
             {
               id: 45,
               text: "Relax and get plenty of rest",
               status: "not-started",
               dueDate: "",
+              notes: "Take time for self-care",
             },
           ],
         },
@@ -649,30 +769,35 @@
               text: "Attend rehearsal",
               status: "not-started",
               dueDate: "",
+              notes: "Practice ceremony processional",
             },
             {
               id: 47,
               text: "Host rehearsal dinner",
               status: "not-started",
               dueDate: "",
+              notes: "Enjoy time with wedding party and family",
             },
             {
               id: 48,
               text: "Give wedding party gifts",
               status: "not-started",
               dueDate: "",
+              notes: "Express appreciation to your wedding party",
             },
             {
               id: 49,
               text: "Confirm transportation details",
               status: "not-started",
               dueDate: "",
+              notes: "Verify pickup times and locations",
             },
             {
               id: 50,
               text: "Get a good night's sleep",
               status: "not-started",
               dueDate: "",
+              notes: "Important for feeling your best",
             },
           ],
         },
@@ -685,154 +810,372 @@
               text: "Have a healthy breakfast",
               status: "not-started",
               dueDate: "",
+              notes: "Don't skip the most important meal",
             },
             {
               id: 52,
               text: "Get hair and makeup done",
               status: "not-started",
               dueDate: "",
+              notes: "Allow plenty of time",
             },
             {
               id: 53,
               text: "Put on wedding attire",
               status: "not-started",
               dueDate: "",
+              notes: "With help from bridesmaids",
             },
             {
               id: 54,
               text: "Enjoy your special day",
               status: "not-started",
               dueDate: "",
+              notes: "Be present and savor every moment",
             },
             {
               id: 55,
               text: "Depart for honeymoon",
               status: "not-started",
               dueDate: "",
+              notes: "Have a wonderful trip",
             },
           ],
         },
       ];
 
-      // Timeline Functions
-      function renderTimeline() {
-        const timelineWrapper = document.getElementById("timelineWrapper");
-        // Clear existing timeline
-        timelineWrapper.innerHTML = "";
-        let hasVisibleTasks = false;
-        weddingTasks.forEach((period) => {
-          // Apply status filter
-          const filteredTasks = period.tasks.filter((task) => {
-            return task.status === "not-started";
-          });
-          // Only show the period if it has tasks after filtering
-          if (filteredTasks.length > 0) {
-            hasVisibleTasks = true;
-            const timelinePeriod = document.createElement("div");
-            timelinePeriod.className = "timeline-period";
-            // Create header with icon and title
-            const timelineHeader = document.createElement("div");
-            timelineHeader.className = "timeline-header";
-            const timelineIcon = document.createElement("div");
-            timelineIcon.className = "timeline-icon";
-            timelineIcon.innerHTML = `<i class="fas ${period.icon}"></i>`;
-            const timelineTitle = document.createElement("div");
-            timelineTitle.className = "timeline-title";
-            timelineTitle.textContent = period.period;
-            timelineHeader.appendChild(timelineIcon);
-            timelineHeader.appendChild(timelineTitle);
-            // Create tasks container
-            const timelineTasks = document.createElement("div");
-            timelineTasks.className = "timeline-tasks";
-            // Add tasks
-            filteredTasks.forEach((task) => {
-              const taskItem = document.createElement("div");
-              taskItem.className = `task-item`;
-              taskItem.dataset.taskId = task.id;
-              
-              const taskContent = document.createElement("div");
-              taskContent.className = "task-content";
-              
-              // Task icon
-              const taskIcon = document.createElement("div");
-              taskIcon.className = "task-icon";
-              taskIcon.innerHTML = '<i class="fas fa-circle"></i>';
-              
-              // Task text
-              const taskText = document.createElement("div");
-              taskText.className = "task-text";
-              taskText.textContent = task.text;
-              
-              taskContent.appendChild(taskIcon);
-              taskContent.appendChild(taskText);
-              taskItem.appendChild(taskContent);
-              
-              // Add click event to mark task as completed
-              taskItem.addEventListener("click", function() {
-                markTaskCompleted(task.id);
-              });
-              
-              timelineTasks.appendChild(taskItem);
-            });
-            timelinePeriod.appendChild(timelineHeader);
-            timelinePeriod.appendChild(timelineTasks);
-            timelineWrapper.appendChild(timelinePeriod);
+      // Global variables
+      let darkMode = false;
+      let progressChart = null;
+      let weddingTasks = [...defaultWeddingTasks];
+      let syncInterval = null;
+
+      // DOM Elements
+      const darkModeToggle = document.getElementById("darkModeToggle");
+      const totalTasksEl = document.getElementById("totalTasks");
+      const completedTasksEl = document.getElementById("completedTasks");
+      const inProgressTasksEl = document.getElementById("inProgressTasks");
+      const upcomingDeadlinesEl = document.getElementById("upcomingDeadlines");
+      const overallProgressBar = document.getElementById("overallProgressBar");
+      const progressPercentage = document.getElementById("progressPercentage");
+      const progressText = document.getElementById("progressText");
+      const periodsContainer = document.getElementById("periodsContainer");
+      const syncIcon = document.getElementById("syncIcon");
+      const syncText = document.getElementById("syncText");
+
+      // Load wedding tasks from localStorage
+      function loadWeddingTasks() {
+        try {
+          const savedTasks = localStorage.getItem("weddingTasks");
+          if (savedTasks) {
+            weddingTasks = JSON.parse(savedTasks);
+            updateSyncStatus(true);
+            return true;
           }
-        });
-        // Show empty state if no tasks are visible
-        if (!hasVisibleTasks) {
-          const emptyState = document.createElement("div");
-          emptyState.className = "empty-state";
-          emptyState.style.width = "100%";
-          emptyState.innerHTML = `
-            <i class="fas fa-heart"></i>
-            <h3>All tasks completed!</h3>
-            <p>Congratulations on your wedding planning progress</p>
-          `;
-          timelineWrapper.appendChild(emptyState);
+        } catch (error) {
+          console.error("Error loading wedding tasks:", error);
+          updateSyncStatus(false);
         }
+        return false;
+      }
+
+      // Update sync status indicator
+      function updateSyncStatus(success) {
+        if (success) {
+          syncIcon.classList.remove("error");
+          syncText.textContent = "Synced";
+        } else {
+          syncIcon.classList.add("error");
+          syncText.textContent = "Sync Error";
+        }
+      }
+
+      // Get active periods (periods with incomplete tasks)
+      function getActivePeriods() {
+        // Filter periods to only include those with at least one incomplete task
+        const activePeriods = weddingTasks.filter(period => 
+          period.tasks.some(task => task.status !== 'completed')
+        );
         
-        // Update progress stats
-        updateProgressStats();
+        // Return up to 4 active periods
+        return activePeriods.slice(0, 4);
       }
-      
-      function markTaskCompleted(taskId) {
-        weddingTasks.forEach((period) => {
-          const task = period.tasks.find((t) => t.id === taskId);
-          if (task) {
-            task.status = "completed";
+
+      // Initialize the dashboard
+      function initDashboard() {
+        // Load tasks from localStorage
+        loadWeddingTasks();
+        
+        // Calculate statistics
+        calculateStats();
+        
+        // Render progress bar
+        renderProgressBar();
+        
+        // Create chart
+        createProgressChart();
+        
+        // Render period cards
+        renderPeriodCards();
+        
+        // Set up event listeners
+        setupEventListeners();
+        
+        // Set up periodic sync
+        setupPeriodicSync();
+      }
+
+      // Set up periodic sync with localStorage
+      function setupPeriodicSync() {
+        // Check for updates every 2 seconds
+        syncInterval = setInterval(() => {
+          if (loadWeddingTasks()) {
+            // Data was updated, refresh the UI
+            calculateStats();
+            renderProgressBar();
+            updateChart();
+            renderPeriodCards();
           }
-        });
-        renderTimeline();
+        }, 2000);
       }
-      
-      function updateProgressStats() {
+
+      // Calculate statistics
+      function calculateStats() {
+        // Get active periods (only those with incomplete tasks)
+        const activePeriods = getActivePeriods();
+        
+        let totalTasks = 0;
+        let completedTasks = 0;
+        let inProgressTasks = 0;
+        let upcomingDeadlines = 0;
+        const today = new Date();
+        
+        activePeriods.forEach(period => {
+          period.tasks.forEach(task => {
+            totalTasks++;
+            
+            if (task.status === 'completed') {
+              completedTasks++;
+            } else if (task.status === 'in-progress') {
+              inProgressTasks++;
+            }
+            
+            if (task.dueDate) {
+              const dueDate = new Date(task.dueDate);
+              if (dueDate >= today && task.status !== 'completed') {
+                upcomingDeadlines++;
+              }
+            }
+          });
+        });
+        
+        // Update DOM
+        totalTasksEl.textContent = totalTasks;
+        completedTasksEl.textContent = completedTasks;
+        inProgressTasksEl.textContent = inProgressTasks;
+        upcomingDeadlinesEl.textContent = upcomingDeadlines;
+      }
+
+      // Render progress bar
+      function renderProgressBar() {
+        // Calculate overall progress from ALL tasks, not just active periods
         let totalTasks = 0;
         let completedTasks = 0;
         
         weddingTasks.forEach(period => {
           period.tasks.forEach(task => {
             totalTasks++;
-            if (task.status === "completed") {
+            if (task.status === 'completed') {
               completedTasks++;
             }
           });
         });
         
-        const remainingTasks = totalTasks - completedTasks;
-        const progressPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
         
-        // Update DOM elements
-        document.getElementById("progressBar").style.width = `${progressPercentage}%`;
-        document.getElementById("progressText").textContent = `${progressPercentage}% Complete`;
-        document.getElementById("totalTasks").textContent = totalTasks;
-        document.getElementById("completedTasks").textContent = completedTasks;
-        document.getElementById("remainingTasks").textContent = remainingTasks;
+        overallProgressBar.style.width = `${percentage}%`;
+        progressPercentage.textContent = `${percentage}%`;
+        progressText.textContent = `${completedTasks} of ${totalTasks} tasks completed`;
       }
-      
-      // Initialize the page
-      document.addEventListener("DOMContentLoaded", () => {
-        renderTimeline();
+
+      // Create progress chart
+      function createProgressChart() {
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        
+        // Prepare data for chart - use ALL periods for the chart
+        const labels = [];
+        const data = [];
+        const backgroundColors = [];
+        
+        weddingTasks.forEach(period => {
+          labels.push(period.period);
+          
+          const totalTasks = period.tasks.length;
+          const completedTasks = period.tasks.filter(task => task.status === 'completed').length;
+          const percentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+          
+          data.push(percentage);
+          backgroundColors.push('rgba(212, 165, 165, 0.7)');
+        });
+        
+        // Create chart
+        progressChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Completion %',
+              data: data,
+              backgroundColor: backgroundColors,
+              borderColor: 'rgba(212, 165, 165, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                  callback: function(value) {
+                    return value + '%';
+                  }
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: false
+              }
+            }
+          }
+        });
+      }
+
+      // Update chart with new data
+      function updateChart() {
+        if (!progressChart) return;
+        
+        // Prepare new data - use ALL periods for the chart
+        const data = [];
+        
+        weddingTasks.forEach(period => {
+          const totalTasks = period.tasks.length;
+          const completedTasks = period.tasks.filter(task => task.status === 'completed').length;
+          const percentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+          
+          data.push(percentage);
+        });
+        
+        // Update chart data
+        progressChart.data.datasets[0].data = data;
+        progressChart.update();
+      }
+
+      // Render period cards
+      function renderPeriodCards() {
+        periodsContainer.innerHTML = '';
+        
+        // Get active periods (only those with incomplete tasks)
+        const activePeriods = getActivePeriods();
+        
+        activePeriods.forEach(period => {
+          const totalTasks = period.tasks.length;
+          const completedTasks = period.tasks.filter(task => task.status === 'completed').length;
+          const inProgressTasks = period.tasks.filter(task => task.status === 'in-progress').length;
+          const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+          
+          const periodCard = document.createElement('div');
+          periodCard.className = 'period-card';
+          
+          periodCard.innerHTML = `
+            <div class="period-header">
+              <i class="fas ${period.icon}"></i> ${period.period}
+            </div>
+            <div class="period-content">
+              <div class="period-stats">
+                <div class="period-stat">
+                  <div class="period-stat-value">${totalTasks}</div>
+                  <div class="period-stat-label">Total</div>
+                </div>
+                <div class="period-stat">
+                  <div class="period-stat-value">${completedTasks}</div>
+                  <div class="period-stat-label">Done</div>
+                </div>
+                <div class="period-stat">
+                  <div class="period-stat-value">${inProgressTasks}</div>
+                  <div class="period-stat-label">In Progress</div>
+                </div>
+              </div>
+              <div class="period-progress">
+                <div class="period-progress-bar" style="width: ${percentage}%"></div>
+              </div>
+            </div>
+          `;
+          
+          periodsContainer.appendChild(periodCard);
+        });
+      }
+
+      // Toggle dark mode
+      function toggleDarkMode() {
+        darkMode = !darkMode;
+        document.body.classList.toggle('dark-mode');
+        
+        // Update icon
+        const icon = darkModeToggle.querySelector('i');
+        if (darkMode) {
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+        } else {
+          icon.classList.remove('fa-sun');
+          icon.classList.add('fa-moon');
+        }
+        
+        // Save dark mode preference
+        localStorage.setItem('weddingDarkMode', darkMode);
+        
+        // Update chart colors if it exists
+        if (progressChart) {
+          const textColor = darkMode ? '#e0e0e0' : '#4a4a4a';
+          const gridColor = darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+          
+          progressChart.options.scales.x.ticks.color = textColor;
+          progressChart.options.scales.y.ticks.color = textColor;
+          progressChart.options.scales.x.grid.color = gridColor;
+          progressChart.options.scales.y.grid.color = gridColor;
+          progressChart.update();
+        }
+      }
+
+      // Set up event listeners
+      function setupEventListeners() {
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        
+        // Listen for storage events to detect changes from other windows/tabs
+        window.addEventListener('storage', (event) => {
+          if (event.key === 'weddingTasks') {
+            loadWeddingTasks();
+            calculateStats();
+            renderProgressBar();
+            updateChart();
+            renderPeriodCards();
+          }
+        });
+      }
+
+      // Initialize dashboard when DOM is loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        // Load dark mode preference
+        const savedDarkMode = localStorage.getItem('weddingDarkMode') === 'true';
+        if (savedDarkMode) {
+          toggleDarkMode();
+        }
+        
+        // Initialize the dashboard
+        initDashboard();
       });
     </script>
   </body>
